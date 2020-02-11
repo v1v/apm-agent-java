@@ -284,7 +284,8 @@ pipeline {
                            string(name: 'GITHUB_CHECK_NAME', value: env.GITHUB_CHECK_OPBEANS_NAME),
                            string(name: 'GITHUB_CHECK_REPO', value: env.REPO),
                            string(name: 'GITHUB_CHECK_SHA1', value: env.GIT_BASE_COMMIT)])
-        githubNotify(context: "${env.GITHUB_CHECK_OPBEANS_NAME}", description: "${env.GITHUB_CHECK_OPBEANS_NAME} ...", status: 'PENDING', targetUrl: "${env.JENKINS_URL}search/?q=${env.OPBEANS_PIPELINE.replaceAll('/','+')}")
+        githubNotify(context: "${env.GITHUB_CHECK_OPBEANS_NAME}", description: "${env.GITHUB_CHECK_OPBEANS_NAME} ...", status: 'PENDING',
+                     targetUrl: "${env.JENKINS_URL}search/?q=${env.OPBEANS_PIPELINE.replaceAll('/','+').replaceAll('%2F','%252F')}")
       }
     }
     stage('AfterRelease') {
