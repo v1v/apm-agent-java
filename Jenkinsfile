@@ -62,6 +62,10 @@ pipeline {
         Build on a linux environment.
         */
         stage('Build') {
+          when {
+            beforeAgent true
+            expression { return false }
+          }
           steps {
             withGithubNotify(context: 'Build', tab: 'artifacts') {
               deleteDir()
@@ -101,7 +105,7 @@ pipeline {
           }
           when {
             beforeAgent true
-            expression { return params.test_ci }
+            expression { return false }
           }
           steps {
             withGithubNotify(context: 'Unit Tests', tab: 'tests') {
@@ -134,7 +138,7 @@ pipeline {
           }
           when {
             beforeAgent true
-            expression { return params.smoketests_ci }
+            expression { return false }
           }
           steps {
             withGithubNotify(context: 'Smoke Tests 01', tab: 'tests') {
@@ -164,7 +168,7 @@ pipeline {
           }
           when {
             beforeAgent true
-            expression { return params.smoketests_ci }
+            expression { return false }
           }
           steps {
             withGithubNotify(context: 'Smoke Tests 02', tab: 'tests') {
@@ -196,16 +200,7 @@ pipeline {
           }
           when {
             beforeAgent true
-            allOf {
-              anyOf {
-                branch 'master'
-                branch "\\d+\\.\\d+"
-                branch "v\\d?"
-                tag "v\\d+\\.\\d+\\.\\d+*"
-                expression { return params.Run_As_Master_Branch }
-              }
-              expression { return params.bench_ci }
-            }
+            expression { return false }
           }
           steps {
             withGithubNotify(context: 'Benchmarks', tab: 'artifacts') {
@@ -244,7 +239,7 @@ pipeline {
           }
           when {
             beforeAgent true
-            expression { return params.doc_ci }
+            expression { return false }
           }
           steps {
             withGithubNotify(context: 'Javadoc') {
@@ -273,16 +268,17 @@ pipeline {
         GITHUB_CHECK_ITS_NAME = 'Integration Tests'
         GITHUB_CHECK_OPBEANS_NAME = 'Opbeans'
         ITS_PIPELINE = 'apm-integration-tests-selector-mbp/master'
-        OPBEANS_PIPELINE = 'apm-agent-java/opbeans-java-selector-mbp/master'
+        OPBEANS_PIPELINE = 'apm-agent-java/opbeans-java-selector-mbp/feature%2Fopbeans-pr'
       }
       steps {
-        build(job: env.ITS_PIPELINE, propagate: false, wait: false,
+        /*build(job: env.ITS_PIPELINE, propagate: false, wait: false,
               parameters: [string(name: 'AGENT_INTEGRATION_TEST', value: 'Java'),
                            string(name: 'BUILD_OPTS', value: "--java-agent-version ${env.GIT_BASE_COMMIT}"),
                            string(name: 'GITHUB_CHECK_NAME', value: env.GITHUB_CHECK_ITS_NAME),
                            string(name: 'GITHUB_CHECK_REPO', value: env.REPO),
                            string(name: 'GITHUB_CHECK_SHA1', value: env.GIT_BASE_COMMIT)])
         githubNotify(context: "${env.GITHUB_CHECK_ITS_NAME}", description: "${env.GITHUB_CHECK_ITS_NAME} ...", status: 'PENDING', targetUrl: "${env.JENKINS_URL}search/?q=${env.ITS_PIPELINE.replaceAll('/','+')}")
+        */
         build(job: env.OPBEANS_PIPELINE, propagate: false, wait: false,
               parameters: [string(name: 'BUILD_OPTS', value: "JAVA_AGENT_REPO=${env.ORG_NAME}/${env.REPO_NAME} JAVA_AGENT_BRANCH=${env.GIT_BASE_COMMIT}"),
                            string(name: 'GITHUB_CHECK_NAME', value: env.GITHUB_CHECK_OPBEANS_NAME),
@@ -294,7 +290,8 @@ pipeline {
     stage('AfterRelease') {
       options { skipDefaultCheckout() }
       when {
-        tag pattern: 'v\\d+\\.\\d+\\.\\d+', comparator: 'REGEXP'
+        beforeAgent true
+        expression { return false }
       }
       stages {
         stage('Docker push') {
@@ -328,11 +325,6 @@ pipeline {
           }
         }
       }
-    }
-  }
-  post {
-    cleanup {
-      notifyBuildResult()
     }
   }
 }
