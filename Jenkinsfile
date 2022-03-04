@@ -33,7 +33,7 @@ pipeline {
   }
   triggers {
     issueCommentTrigger("(${obltGitHubComments()}|^run (jdk compatibility|benchmark|integration|end-to-end|windows) tests)")
-    cron('H */4 * * *')
+    cron('H/10 * * * *')
   }
   parameters {
     string(name: 'JAVA_VERSION', defaultValue: 'java11', description: 'Java version to build & test')
