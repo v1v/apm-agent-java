@@ -148,7 +148,7 @@ pipeline {
             beforeAgent true
             expression { return env.ONLY_DOCS == "false" }
           }
-          failFast true
+          failFast false
           parallel {
             /**
              * Run only unit tests
