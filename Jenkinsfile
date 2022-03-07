@@ -17,8 +17,8 @@ pipeline {
     MAVEN_CONFIG = '-Dmaven.repo.local=.m2'
     OPBEANS_REPO = 'opbeans-java'
     JAVA_VERSION = "${params.JAVA_VERSION}"
-    JOB_GCS_BUCKET_STASH = 'apm-ci-temp'
-    JOB_GCS_CREDENTIALS = 'apm-ci-gcs-plugin'
+    JOB_GCS_BUCKET_STASH = 'fleet-ci-temp'
+    JOB_GCS_CREDENTIALS = 'fleet-ci-gcs-plugin'
     JDK_VERSION_K8S_POD = 'openjdk11'
   }
   options {
