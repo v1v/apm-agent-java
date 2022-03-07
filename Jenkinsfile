@@ -227,7 +227,7 @@ pipeline {
                   expression { return env.GITHUB_COMMENT?.contains('integration tests') }
                   expression { matchesPrLabel(label: 'ci:agent-integration') }
                   expression { return env.CHANGE_ID != null && !pullRequest.draft }
-                  not { changeRequest() }
+                  //not { changeRequest() }
                 }
               }
               steps {
@@ -258,7 +258,7 @@ pipeline {
                   expression { return env.GITHUB_COMMENT?.contains('integration tests') }
                   expression { matchesPrLabel(label: 'ci:agent-integration') }
                   expression { return env.CHANGE_ID != null && !pullRequest.draft }
-                  not { changeRequest() }
+                  //not { changeRequest() }
                 }
               }
               steps {
@@ -352,7 +352,7 @@ pipeline {
                 expression { return env.GITHUB_COMMENT?.contains('end-to-end tests') }
                 expression { matchesPrLabel(label: 'ci:end-to-end') }
                 expression { return env.CHANGE_ID != null && !pullRequest.draft }
-                not { changeRequest() }
+                //not { changeRequest() }
               }
             }
           }
