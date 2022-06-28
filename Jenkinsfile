@@ -214,6 +214,9 @@ pipeline {
               }
               post {
                 always {
+                  dir("${BASE_DIR}") {
+                    bat(label: 'git rev-list HEAD --count', script: 'git rev-list HEAD --count', returnStatus: true)
+                  }
                   reportTestResults()
                 }
               }
