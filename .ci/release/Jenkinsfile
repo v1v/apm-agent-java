@@ -68,6 +68,8 @@ pipeline {
             deleteDir()
             dir("${BASE_DIR}") {
               unstash 'source'
+              // mvnVersion reports the version but maven.config uses -V so it's not parsed correctly.
+              sh(label: 'disable .mvn/maven.config', script: 'mv .mvn/maven.config .mvn/maven.config.bck')
               script {
                 env.SNAPSHOT_VERSION = mvnVersion(showQualifiers: true)
                 env.RELEASE_VERSION_NO_SNAPSHOT = snapshot_version.minus('-SNAPSHOT')
@@ -83,6 +85,7 @@ pipeline {
                 env.RELEASE_AWS_LAMBDA_VERSION = '-ver-' + env.USER_RELEASE_VERSION.replaceAll('\\.', '-')
                 env.SAME_VERSION = env.RELEASE_VERSION_NO_SNAPSHOT.equals(env.USER_RELEASE_VERSION)
               }
+              sh(label: 'enable .mvn/maven.config', script: 'mv .mvn/maven.config.bck .mvn/maven.config')
             }
           }
         }
