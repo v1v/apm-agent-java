@@ -44,7 +44,7 @@ jobs:
       id-token: write
     env:
       TARBALL_FILE: artifacts.tar
-    if: ${{ contains(needs.validate.outputs.is-snapshot, 'true') }}
+    if: ${{ contains(needs.validate.outputs.is-snapshot, 'true') && false != false }}
     steps:
       - id: buildkite
         name: Run Deploy
